@@ -1,5 +1,7 @@
-pyjwt
-passlib
-passlib[bcrypt]
-dotenv
+fastapi
+uvicorn
 sqlalchemy
+pymysql
+python-jose[cryptography]
+passlib[bcrypt]
+python-dotenv
