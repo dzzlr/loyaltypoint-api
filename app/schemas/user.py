@@ -1,12 +1,9 @@
-# app/schemas.py
 from pydantic import BaseModel
 from typing import Optional
 
 class UserCreate(BaseModel):
-    # cif: str
     username: str
     password: str
-    # point: int = 0
 
     class Config:
         orm_mode = True

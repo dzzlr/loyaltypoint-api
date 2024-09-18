@@ -8,7 +8,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
 from app import models, schemas
-from app.database import get_db
+from app.services.database import get_db
 from dotenv import load_dotenv
 
 load_dotenv()
