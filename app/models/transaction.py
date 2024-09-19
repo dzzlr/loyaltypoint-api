@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DECIMAL, TIMESTAMP, ForeignKey, func
+from sqlalchemy import Column, Integer, String, TIMESTAMP, ForeignKey, func
 from ..services.database import Base
 
 class Transaction(Base):

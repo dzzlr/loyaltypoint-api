@@ -1,17 +1,18 @@
 from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from ..auth import auth 
-from ..models import User
-from ..schemas import UserCreate, UserResponse, Token
+from ..models import User, Transaction
+from ..schemas import UserCreate, UserResponse, Token, UserTransactionsResponse
 from ..services.database import get_db
 from ..utils.generate_cif import generate_random_cif
 
 router = APIRouter(
     prefix="/api",
-    tags=["users"],
+    tags=["Users"],
     # responses={404: {"description": "Not found"}},
 )
 
@@ -53,3 +54,29 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 @router.get("/users/me", response_model=UserResponse)
 async def read_users_me(current_user: UserResponse = Depends(auth.get_current_user)):
     return current_user
+
+@router.get("/transactions/me", response_model=UserTransactionsResponse)
+def get_user_transactions(db: Session = Depends(get_db), current_user: User = Depends(auth.get_current_user)):
+    transactions = db.query(Transaction).filter(Transaction.cif == current_user.cif).all()
+    total_points = sum(t.score for t in transactions)
+    return {"total_points": total_points, "transactions": transactions}
+
+@router.get("/transactions/point", response_model=dict)
+def get_user_transactions_grouped_by_payment_type(
+    db: Session = Depends(get_db), 
+    current_user: User = Depends(auth.get_current_user)
+):
+    # Query to sum the scores grouped by payment_type_id
+    grouped_transactions = db.query(
+        Transaction.payment_type_id,
+        func.sum(Transaction.score)
+    ).filter(
+        Transaction.cif == current_user.cif
+    ).group_by(
+        Transaction.payment_type_id
+    ).all()
+
+    # Convert result to dictionary where keys are payment_type_ids and values are the total points
+    result = {f"{str(payment_type_id).zfill(3)}": int(total_score) for payment_type_id, total_score in grouped_transactions}
+    
+    return result
