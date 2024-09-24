@@ -4,7 +4,7 @@ from datetime import datetime
 class TransactionCreate(BaseModel):
     payment_type_id: str
     amount: int
-    score: int
+    # score: int
 
 class TransactionResponse(BaseModel):
     id: int
