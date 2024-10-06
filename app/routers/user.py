@@ -45,7 +45,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     hashed_password = auth.get_password_hash(user.password)
 
     # Create a new user with random CIF, hashed password, and default points
-    db_user = User(cif=random_cif, username=user.username, hashed_password=hashed_password, point=0)
+    db_user = User(cif=random_cif, username=user.username, email=user.email, hashed_password=hashed_password, point=0)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

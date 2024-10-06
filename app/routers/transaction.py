@@ -9,7 +9,7 @@ from ..auth import auth
 from ..schemas.transaction import TransactionCreate, TransactionResponse
 from ..models import User, Transaction
 from ..services.database import get_db
-from ..services.rabbitmq import RabbitMQ
+# from ..services.rabbitmq import RabbitMQ
 
 router = APIRouter(
     prefix="/api/transactions",
@@ -17,15 +17,15 @@ router = APIRouter(
     # responses={404: {"description": "Not found"}},
 )
 
-rabbitmq = RabbitMQ()
+# rabbitmq = RabbitMQ()
 logger = logging.getLogger('uvicorn.error')
 
 TRANSACTION_RULES = {
-    "T001": {"min_amount": 25000, "max_transactions": 50, "points": 1},
-    "T002": {"min_amount": 25000, "max_transactions": 50, "points": 1},
-    "T003": {"min_amount": 25000, "max_transactions": 30, "points": 1},
-    "T004": {"min_amount": 25000, "max_transactions": 50, "points": 2},
-    "T005": {"min_amount": 25000, "max_transactions": 50, "points": 1},
+    "T001": {"min_amount": 25000, "max_transactions": 50, "points": 190},
+    "T002": {"min_amount": 25000, "max_transactions": 50, "points": 125},
+    "T003": {"min_amount": 25000, "max_transactions": 50, "points": 100},
+    "T004": {"min_amount": 25000, "max_transactions": 50, "points": 100},
+    "T005": {"min_amount": 25000, "max_transactions": 50, "points": 3},
 }
 
 # @router.post("/", response_model=TransactionResponse)

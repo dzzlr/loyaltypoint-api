@@ -5,6 +5,7 @@ from datetime import datetime
 class UserCreate(BaseModel):
     username: str
     password: str
+    email: str
 
     class Config:
         orm_mode = True
@@ -12,6 +13,7 @@ class UserCreate(BaseModel):
 class UserResponse(BaseModel):
     cif: str
     username: str
+    email: str
     point: int
 
     class Config:

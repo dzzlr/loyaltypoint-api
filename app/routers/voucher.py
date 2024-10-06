@@ -1,11 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime
+import logging
 
 from ..auth import auth   # Assuming you're using JWT to get the current logged-in user
 from ..models import User, VoucherBatch, Voucher, VoucherTransaction
 from ..schemas.voucher import VoucherTransactionCreate, VoucherTransactionResponse, VoucherRedeem
 from ..services.database import get_db
+from ..utils.send_email import send_email
+
+logger = logging.getLogger('uvicorn.error')
 
 router = APIRouter(
     prefix="/api/vouchers",
@@ -58,6 +62,12 @@ def buy_voucher_transaction(
 
     # Step 8: Return the created transaction
     db.refresh(new_voucher_transaction)
+    logger.info({'message': "Successfully buy voucher by " + current_user.username})
+
+    email_subject = f"Your Voucher {voucher_batch.name} has been Redeemed"
+    email_body = f"Dear {current_user.username},\n\nYour voucher code is {available_voucher.id}.\n\nBest regards,\nbank bjb"
+    send_email(email_subject, current_user.email, email_body)
+
     return new_voucher_transaction
 
 @router.post("/redeem", response_model=VoucherTransactionResponse)
